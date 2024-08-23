@@ -1,0 +1,54 @@
+
+2000 ' GLOBAL VARIABLE DEFINITIONS AND INIT
+2010 DIM LX(2) ' LINE GLOBAL Variable X coodinates
+2020 ' LX(0) starting X coordinate
+2030 ' LX(1) ending X coordinate
+2040 DIM LY(2) ' LINE Global Variable Y coordinates     
+2050 ' LY(0) starting Y coordinate
+2060 ' LY(1) ending Y coordinate
+2070 DIM LD(2) ' LINE-LOCAL Delta X and Y Variables
+2080 ' LD(0) the delta between the X coordinates
+2090 ' LD(1) the delta between the Y coordinates
+2100 DIM LS(2) ' LINE LOCAL Variable SIGN of X and Y deltas     
+2110 ' LS(0) the sign of the difference betweeen X coordinates
+2120 ' LS(1) the sign of the difference betweeen Y coordinates
+     
+4000 ' MAIN
+4010 INPUT "X1, Y1, X2, Y2"; LX(0), LY(0), LX(1), LY(1)
+4020 SCREEN 0,3
+4030 COLOR 15
+4040 CLEAR bitmap
+4050 GOSUB 10010
+4060 PAUSE
+4070 END     
+4080 ' END MAIN     
+     
+     
+10000 ' LINE DRAWING USING BRESENHAM'S ALGORITHM (NO SWAP, NO MULTIPLE STATEMENTS)     
+10010 LD(0) = ABS(LX(1) - LX(0)) : ' X delta = absolute value of End-X minus Start-X
+10020 LD(1) = ABS(LY(1) - LY(0)) : ' Y delta = absolute value of End-Y minus Start-Y
+10030 LS(0) = SGN(LX(1) - LX(0)) : ' SIGN of the X delta
+10040 LS(1) = SGN(LY(1) - LY(0)) : ' SIGN of the Y delta
+10050 IF LD(0) > LD(1) THEN GOSUB 10090
+10060 IF LD(0) <= LD(1) THEN GOSUB 10190
+10070 RETURN : ' TO MAIN 
+10080 ' CASE WHERE LD(0) > LD(1) (MORE HORIZONTAL)
+10090 E = 2 * LD(1) - LD(0)
+10100 FOR I = 1 TO LD(0) + 1
+10110     pset(LX(0), LY(0))
+10120     IF E >= 0 THEN LY(0) = LY(0) + LS(1)
+10130     IF E >= 0 THEN E = E - 2 * LD(0)
+10140     LX(0) = LX(0) + LS(0)
+10150     E = E + 2 * LD(1)
+10160 NEXT I
+10170 RETURN : ' TO LINE ALGO
+10180 ' CASE WHERE LD(1) >= LD(0) (MORE VERTICAL)
+10190 E = 2 * LD(0) - LD(1)
+10200 FOR I = 1 TO LD(1) + 1
+10210     pset(LX(0), LY(0))
+10220     IF E >= 0 THEN LX(0) = LX(0) + LS(0)
+10230     IF E >= 0 THEN E = E - 2 * LD(1)
+10240     LY(0) = LY(0) + LS(1)
+10250     E = E + 2 * LD(0)
+10260 NEXT I
+10270 RETURN : ' TO LINE ALGO
